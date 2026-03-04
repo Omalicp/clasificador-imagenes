@@ -1,3 +1,4 @@
+'''
 from flask import Flask, request, render_template
 from PIL import Image
 import numpy as np
@@ -42,4 +43,52 @@ if __name__ == '__main__':
     # Crear la carpeta 'uploads' si no existe
     if not os.path.exists('uploads'):
         os.makedirs('uploads')
+    app.run(debug=True)
+'''
+from flask import Flask, request, render_template
+from PIL import Image
+import numpy as np
+import tensorflow as tf
+import os
+
+# Cargar modelo TFLite
+interpreter = tf.lite.Interpreter(model_path='best_model.tflite')
+interpreter.allocate_tensors()
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+
+class_names = ['bolso', 'calzado', 'pantalon - short', 'polo']
+
+def predict_image(image_path):
+    image = Image.open(image_path).convert('RGB')
+    image = image.resize((224, 224))
+    image_array = np.array(image, dtype=np.float32) / 255.0
+    image_array = np.expand_dims(image_array, axis=0)
+    interpreter.set_tensor(input_details[0]['index'], image_array)
+    interpreter.invoke()
+    predictions = interpreter.get_tensor(output_details[0]['index'])
+    predicted_class = class_names[np.argmax(predictions)]
+    confidence = float(np.max(predictions))
+    return predicted_class, confidence
+
+app = Flask(__name__)
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return 'No file part'
+        file = request.files['file']
+        if file.filename == '':
+            return 'No selected file'
+        if file:
+            os.makedirs('uploads', exist_ok=True)
+            image_path = os.path.join('uploads', file.filename)
+            file.save(image_path)
+            predicted_class, confidence = predict_image(image_path)
+            return render_template('index.html', prediction=predicted_class, confidence=confidence)
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    os.makedirs('uploads', exist_ok=True)
     app.run(debug=True)
