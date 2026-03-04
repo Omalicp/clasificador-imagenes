@@ -562,7 +562,7 @@
               <svg viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
             </div>
             <p class="upload-label">Arrastra o selecciona una imagen</p>
-            <p class="upload-sub">JPG, PNG, WEBP — hasta 10MB</p>
+            <p class="upload-sub">JPG hasta 1MB</p>
           </div>
 
           <div id="preview-container">
@@ -686,7 +686,7 @@
 
       document.getElementById('result-class').textContent = prediction.charAt(0).toUpperCase() + prediction.slice(1);
 
-      const pct = Math.round(confidence * 100);
+      const pct = (confidence * 100).toFixed(4);
       document.getElementById('confidence-value').textContent = pct + '%';
 
       setTimeout(() => {
