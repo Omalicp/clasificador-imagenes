@@ -48,11 +48,11 @@ if __name__ == '__main__':
 from flask import Flask, request, render_template
 from PIL import Image
 import numpy as np
-import tensorflow as tf
+import tflite_runtime.interpreter as tflite
 import os
 
 # Cargar modelo TFLite
-interpreter = tf.lite.Interpreter(model_path='best_model.tflite')
+interpreter = tflite.Interpreter(model_path='best_model.tflite')
 interpreter.allocate_tensors()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
