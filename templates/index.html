@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Clasificador de Imágenes</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        color: #2d87f0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      input[type="file"] {
+        display: block;
+        margin: 20px auto;
+      }
+      input[type="submit"] {
+        display: block;
+        margin: 10px auto;
+        background-color: #2d87f0;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #0066cc;
+      }
+      .image-container {
+        text-align: center;
+        margin-top: 20px;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .prediction-container {
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Clasificador de Imágenes</h1>
+    <div class="container">
+      <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" onchange="previewImage(event)">
+        <input type="submit" value="Cargar Predicción">
+      </form>
+      
+      <!-- Mostrar imagen cargada -->
+      <div class="image-container" id="image-container">
+        <!-- La imagen cargada se insertará aquí -->
+      </div>
+
+      {% if prediction %}
+        <div class="prediction-container">
+          <h2>Predicción: {{ prediction }}</h2>
+          <h3>Confianza: {{ confidence }}</h3>
+        </div>
+      {% endif %}
+    </div>
+
+    <script>
+      // Función para mostrar la imagen antes de enviarla
+      function previewImage(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          const imgElement = document.createElement("img");
+          imgElement.src = e.target.result;
+          imgElement.style.maxWidth = "100%";
+          imgElement.style.height = "auto";
+          
+          const imageContainer = document.getElementById('image-container');
+          imageContainer.innerHTML = '<h3>Imagen Cargada:</h3>'; // Limpiar antes de agregar nueva imagen
+          imageContainer.appendChild(imgElement);
+        }
+
+        if (file) {
+          reader.readAsDataURL(file);
+        }
+      }
+    </script>
+  </body>
+</html>

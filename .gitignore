@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.env
+requirements2.txt
+.venv/
+.idea/
