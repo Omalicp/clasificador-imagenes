@@ -695,18 +695,27 @@
       document.getElementById('result-class').textContent = prediction.charAt(0).toUpperCase() + prediction.slice(1);
 
       const pct = (confidence * 100).toFixed(4);
-      document.getElementById('confidence-value').textContent = pct + '%';
 
-      setTimeout(() => {
-        document.getElementById('confidence-fill').style.width = pct + '%';
-      }, 200);
+if (confidence < 0.95) {
+  document.getElementById('confidence-value').textContent = 'Baja confianza';
+  document.getElementById('confidence-value').style.color = '#856404';
+  document.getElementById('confidence-value').style.fontSize = '14px';
+  document.getElementById('confidence-fill').style.width = '0%';
+  const warning = document.getElementById('low-confidence-warning');
+  if (warning) warning.style.display = 'block';
+} else {
+  document.getElementById('confidence-value').textContent = pct + '%';
+  setTimeout(() => {
+    document.getElementById('confidence-fill').style.width = pct + '%';
+  }, 200);
+}
 
-      // Highlight active category
-      document.querySelectorAll('.category-chip').forEach(chip => {
-        if (chip.dataset.cat === prediction.toLowerCase()) {
-          chip.classList.add('active');
-        }
-      });
+// Highlight active category
+document.querySelectorAll('.category-chip').forEach(chip => {
+  if (chip.dataset.cat === prediction.toLowerCase()) {
+    chip.classList.add('active');
+  }
+});
 
       // ← NUEVO: aviso de baja confianza
       if (confidence < 0.95) {
