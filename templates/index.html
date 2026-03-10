@@ -589,41 +589,40 @@
         </div>
 
         <div class="result-content" id="result-content">
-          <div class="result-badge">Clasificado</div>
-          <div class="result-class" id="result-class">—</div>
+  <!-- Vista normal -->
+  <div id="normal-result">
+    <div class="result-badge">Clasificado</div>
+    <div class="result-class" id="result-class">—</div>
+    <div class="confidence-section">
+      <div class="confidence-header">
+        <span class="confidence-label">Confianza</span>
+        <span class="confidence-value" id="confidence-value">—</span>
+      </div>
+      <div class="confidence-bar">
+        <div class="confidence-fill" id="confidence-fill"></div>
+      </div>
+      <div class="confidence-tiers">
+        <span>0%</span><span>50%</span><span>100%</span>
+      </div>
+    </div>
+    <div class="categories">
+      <p class="categories-label">Categorías del modelo</p>
+      <div class="categories-list">
+        <span class="category-chip" data-cat="bolso">Bolso</span>
+        <span class="category-chip" data-cat="calzado">Calzado</span>
+        <span class="category-chip" data-cat="pantalon - short">Pantalón</span>
+        <span class="category-chip" data-cat="polo">Polo</span>
+      </div>
+    </div>
+  </div>
 
-          <div class="confidence-section">
-            <div class="confidence-header">
-              <span class="confidence-label">Confianza</span>
-              <span class="confidence-value" id="confidence-value">—</span>
-            </div>
-            <div class="confidence-bar">
-              <div class="confidence-fill" id="confidence-fill"></div>
-            </div>
-            <div class="confidence-tiers">
-              <span>0%</span>
-              <span>50%</span>
-              <span>100%</span>
-            </div>
-          </div>
-
-          <!-- ← NUEVO: aviso baja confianza -->
-          <div id="low-confidence-warning" style="display:none; margin-top:12px;
-               background:#fff3cd; border:1px solid #ffc107; padding:10px;
-               border-radius:6px; color:#856404; font-size:0.875rem;">
-            ⚠️ Baja confianza — el modelo no está seguro de esta predicción.
-          </div>
-
-          <div class="categories">
-            <p class="categories-label">Categorías del modelo</p>
-            <div class="categories-list" id="categories-list">
-              <span class="category-chip" data-cat="bolso">Bolso</span>
-              <span class="category-chip" data-cat="calzado">Calzado</span>
-              <span class="category-chip" data-cat="pantalon - short">Pantalón</span>
-              <span class="category-chip" data-cat="polo">Polo</span>
-            </div>
-          </div>
-        </div>
+  <!-- Vista baja confianza -->
+  <div id="low-confidence-result" style="display:none; text-align:center; padding:40px 20px;">
+    <div style="font-size:40px; margin-bottom:16px;">⚠️</div>
+    <p style="font-size:16px; font-weight:600; color:var(--text); margin-bottom:8px;">No se pudo identificar</p>
+    <p style="font-size:13px; color:var(--text-muted); line-height:1.6;">El modelo no reconoció el producto con suficiente certeza.<br>Intenta con una imagen más clara o mejor enfocada.</p>
+  </div>
+</div>
       </div>
 
     </div>
@@ -686,20 +685,11 @@ window.addEventListener('DOMContentLoaded', () => {
   const confidence = {{ confidence }};
 
   document.getElementById('result-empty').style.display = 'none';
-  const content = document.getElementById('result-content');
-  content.style.display = 'block';
-  content.style.animation = 'fadeUp 0.5s ease both';
+  document.getElementById('result-content').style.display = 'block';
 
   if (confidence < 0.95) {
-    document.getElementById('result-class').style.display = 'none';
-    document.getElementById('result-badge').style.display = 'none';
-    document.getElementById('confidence-section') && (document.querySelector('.confidence-section').style.display = 'none');
-    document.querySelector('.categories').style.display = 'none';
-    const warning = document.getElementById('low-confidence-warning');
-    warning.style.display = 'block';
-    warning.style.fontSize = '15px';
-    warning.style.padding = '20px';
-    warning.textContent = '⚠️ Baja confianza — el modelo no pudo identificar el producto con certeza. Intenta con otra imagen.';
+    document.getElementById('normal-result').style.display = 'none';
+    document.getElementById('low-confidence-result').style.display = 'block';
   } else {
     const pct = (confidence * 100).toFixed(4);
     document.getElementById('result-class').textContent = prediction.charAt(0).toUpperCase() + prediction.slice(1);
