@@ -48,10 +48,13 @@ if __name__ == '__main__':
 from flask import Flask, request, render_template
 from PIL import Image
 import numpy as np
-import tflite_runtime.interpreter as tflite
 import os
 
-# Cargar modelo TFLite
+try:
+    import tflite_runtime.interpreter as tflite
+except ImportError:
+    import tensorflow.lite as tflite
+
 interpreter = tflite.Interpreter(model_path='best_model.tflite')
 interpreter.allocate_tensors()
 input_details = interpreter.get_input_details()
@@ -86,11 +89,7 @@ def index():
             image_path = os.path.join('uploads', file.filename)
             file.save(image_path)
             predicted_class, confidence = predict_image(image_path)
-            low_confidence = confidence < 0.95  # ← nuevo
-            return render_template('index.html', 
-                                   prediction=predicted_class, 
-                                   confidence=confidence,
-                                   low_confidence=low_confidence)  # ← nuevo
+            return render_template('index.html', prediction=predicted_class, confidence=confidence)
     return render_template('index.html')
 
 if __name__ == '__main__':
