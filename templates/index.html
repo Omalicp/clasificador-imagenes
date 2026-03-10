@@ -680,50 +680,39 @@
       document.getElementById('submit-btn').style.opacity = '0.8';
     });
 
-    // Show results if prediction exists
-    // Show results if prediction exists
     {% if prediction %}
-    window.addEventListener('DOMContentLoaded', () => {
-      const prediction = "{{ prediction }}";
-      const confidence = {{ confidence }};
+window.addEventListener('DOMContentLoaded', () => {
+  const prediction = "{{ prediction }}";
+  const confidence = {{ confidence }};
 
-      document.getElementById('result-empty').style.display = 'none';
-      const content = document.getElementById('result-content');
-      content.style.display = 'block';
-      content.style.animation = 'fadeUp 0.5s ease both';
+  document.getElementById('result-empty').style.display = 'none';
+  const content = document.getElementById('result-content');
+  content.style.display = 'block';
+  content.style.animation = 'fadeUp 0.5s ease both';
 
-      document.getElementById('result-class').textContent = prediction.charAt(0).toUpperCase() + prediction.slice(1);
-
-      const pct = (confidence * 100).toFixed(4);
-
-if (confidence < 0.95) {
-  document.getElementById('confidence-value').textContent = 'Baja confianza';
-  document.getElementById('confidence-value').style.color = '#856404';
-  document.getElementById('confidence-value').style.fontSize = '14px';
-  document.getElementById('confidence-fill').style.width = '0%';
-  const warning = document.getElementById('low-confidence-warning');
-  if (warning) warning.style.display = 'block';
-} else {
-  document.getElementById('confidence-value').textContent = pct + '%';
-  setTimeout(() => {
-    document.getElementById('confidence-fill').style.width = pct + '%';
-  }, 200);
-}
-
-// Highlight active category
-document.querySelectorAll('.category-chip').forEach(chip => {
-  if (chip.dataset.cat === prediction.toLowerCase()) {
-    chip.classList.add('active');
+  if (confidence < 0.95) {
+    document.getElementById('result-class').style.display = 'none';
+    document.getElementById('result-badge').style.display = 'none';
+    document.getElementById('confidence-section') && (document.querySelector('.confidence-section').style.display = 'none');
+    document.querySelector('.categories').style.display = 'none';
+    const warning = document.getElementById('low-confidence-warning');
+    warning.style.display = 'block';
+    warning.style.fontSize = '15px';
+    warning.style.padding = '20px';
+    warning.textContent = '⚠️ Baja confianza — el modelo no pudo identificar el producto con certeza. Intenta con otra imagen.';
+  } else {
+    const pct = (confidence * 100).toFixed(4);
+    document.getElementById('result-class').textContent = prediction.charAt(0).toUpperCase() + prediction.slice(1);
+    document.getElementById('confidence-value').textContent = pct + '%';
+    setTimeout(() => {
+      document.getElementById('confidence-fill').style.width = pct + '%';
+    }, 200);
+    document.querySelectorAll('.category-chip').forEach(chip => {
+      if (chip.dataset.cat === prediction.toLowerCase()) chip.classList.add('active');
+    });
   }
 });
-
-      // ← NUEVO: aviso de baja confianza
-      if (confidence < 0.95) {
-        const warning = document.getElementById('low-confidence-warning');
-        if (warning) warning.style.display = 'block';
-      }
-    });
-    {% endif %}
+{% endif %}
   </script>
 
 </body>
