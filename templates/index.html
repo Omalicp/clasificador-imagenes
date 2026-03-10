@@ -607,6 +607,13 @@
             </div>
           </div>
 
+          <!-- ← NUEVO: aviso baja confianza -->
+          <div id="low-confidence-warning" style="display:none; margin-top:12px;
+               background:#fff3cd; border:1px solid #ffc107; padding:10px;
+               border-radius:6px; color:#856404; font-size:0.875rem;">
+            ⚠️ Baja confianza — el modelo no está seguro de esta predicción.
+          </div>
+
           <div class="categories">
             <p class="categories-label">Categorías del modelo</p>
             <div class="categories-list" id="categories-list">
@@ -674,6 +681,7 @@
     });
 
     // Show results if prediction exists
+    // Show results if prediction exists
     {% if prediction %}
     window.addEventListener('DOMContentLoaded', () => {
       const prediction = "{{ prediction }}";
@@ -699,6 +707,12 @@
           chip.classList.add('active');
         }
       });
+
+      // ← NUEVO: aviso de baja confianza
+      if (confidence < 0.95) {
+        const warning = document.getElementById('low-confidence-warning');
+        if (warning) warning.style.display = 'block';
+      }
     });
     {% endif %}
   </script>

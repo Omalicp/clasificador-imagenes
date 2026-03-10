@@ -86,7 +86,11 @@ def index():
             image_path = os.path.join('uploads', file.filename)
             file.save(image_path)
             predicted_class, confidence = predict_image(image_path)
-            return render_template('index.html', prediction=predicted_class, confidence=confidence)
+            low_confidence = confidence < 0.95  # ← nuevo
+            return render_template('index.html', 
+                                   prediction=predicted_class, 
+                                   confidence=confidence,
+                                   low_confidence=low_confidence)  # ← nuevo
     return render_template('index.html')
 
 if __name__ == '__main__':
